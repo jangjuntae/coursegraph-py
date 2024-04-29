@@ -7,9 +7,17 @@ font_name = font_manager.FontProperties(fname="data/malgun.ttf").get_name()
 rc('font', family=font_name)
 
 def read_subjects(filename):
-    with open(filename, 'rt', encoding='UTF8') as file:
-        data = yaml.safe_load(file)
-    return data.get('과목', [])
+    # 파일 읽기 시 예외 처리 추가
+    try:
+        with open(filename, 'rt', encoding='UTF8') as file:
+            data = yaml.safe_load(file)
+        return data.get('과목', [])
+    except FileNotFoundError:
+        print("파일을 찾을 수 없습니다.")
+        return []
+    except yaml.YAMLError:
+        print("YAML 파일을 파싱하는 중 오류가 발생했습니다.")
+        return []
 
 # 학년과 학기가 같은 강좌에 대한 좌표 조정 함수
 def adjust_coordinates(subjects):
