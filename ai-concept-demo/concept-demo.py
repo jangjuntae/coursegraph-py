@@ -2,6 +2,7 @@ import strictyaml
 import networkx as nx
 import matplotlib.pyplot as plt
 import os
+import sys
 from matplotlib import font_manager, rc
 
 script_path = os.path.abspath(__file__)
@@ -18,11 +19,11 @@ def read_subjects(filename):
             data = strictyaml.load(yaml_data)
             return data['과목']
     except FileNotFoundError:
-        print("해당하는 파일이 없습니다.")
-        return []
+        print("해당하는 파일이 없습니다.", file=sys.stderr)
+        return None
     except strictyaml.YAMLValidationError as e:
         print("YAML 데이터가 잘못되어있습니다.", e)
-        return []
+        return None
 
 # 학년과 학기가 같은 강좌에 대한 좌표 조정 함수
 def adjust_coordinates(subjects):
@@ -71,4 +72,6 @@ def draw_course_structure(subjects):
 if __name__ == "__main__":
     filename =  os.path.join(script_dir, './input.yaml')
     subjects = read_subjects(filename)
+    if not subjects:
+        sys.exit(1)
     draw_course_structure(subjects)
